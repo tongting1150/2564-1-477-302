@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Quiz-2 CSS.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300&display=swap" rel="stylesheet">
+    <title>Document</title>
+</head>
+<body onload="chkUsername()"> 
+    <div class="container">
+        <header>
+            <center><h1>กรอกข้อมูลผู้ใช้</h1></center>
+        </header>
+    <form>
+        <center>
+        <font size="6">
+        Firstname  <input type="text" placeholder="Enter your firstname" required>
+        <br>
+        Lastname <input type="text" placeholder="Enter your lastname" required>
+        <br>
+        Nickname <input type="text" placeholder="Enter your nickname" required>
+        <br>
+        Birthday <input type="text" placeholder="Enter your birthday" required>
+        <br>
+        Email <input type="text" placeholder="Enter your email" required>
+        <br>
+        Phone Number <input type="text" placeholder="Enter your number" required>
+        <br>
+        
+        <input type="radio" name="gender" id="dot-1"> Male
+        <input type="radio" name="gender" id="dot-2"> Female
+        <br>
+        <button id="show">คลิกเพื่อค้นหาตำแหน่ง</button> 
+        <br>
+        <input type="submit" value="Register">
+        <br>
+        Save Phone number <div id="div1"></div>
+        <button onclick="saveUsername()" type="button">Save</button>
+        <button onclick="delUsername()" type="button">Delete</button>
+        <div id="result"></div>
+        <script>
+        function chkUsername() {
+            if(typeof(Storage) !== "undefined") {
+                if (localStorage.username) {
+                    document.getElementById("div1").innerHTML = localStorage.username;
+                } else {
+                    document.getElementById("div1").innerHTML = "<input type='text' placeholder='   Save Phone number ' id='username'>";
+                }
+            } else {
+                document.getElementById("result").innerHTML = "Sorry, your browser does not support web storage...";
+            }
+        }
+        function saveUsername() {
+            uname = document.getElementById("username");
+            localStorage.username = uname.value;
+            chkUsername();
+        }
+        function delUsername() {
+            localStorage.removeItem("username");
+            chkUsername();
+        }
+        </script>
+        </center>
+    </form>
+
+    <!-- แผนที่ -->
+    <center>
+        <dialog id="myFirstDialog">
+                <p id="demo">ตำแหน่งของคุณ คือ :</p>
+                <button onclick="getLocation()">หาตำแหน่ง</button>
+                <div id="mapholder"></div>
+                <form>
+                    <input type="submit" value="เสร็จสิ้น">
+                </form>
+                <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAoKoNVKdXRrp8YDgara5W1m2nfTU1dG5g&callback=initMap"
+  type="text/javascript"></script>
+                <script>
+                var x = document.getElementById("demo");
+                function getLocation() {
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(showPosition, showError);
+                    } else {
+                        x.innerHTML = "Geolocation is not supported by this browser.";
+                    }
+                }
+                
+                function showPosition(position) {
+                    lat = position.coords.latitude;
+                    lon = position.coords.longitude;
+                    latlon = new google.maps.LatLng(lat, lon)
+                    mapholder = document.getElementById('mapholder')
+                    mapholder.style.height = '350px';
+                    mapholder.style.width = '500px';
+
+                    var myOptions = {
+                        center: latlon,
+                        zoom:16,
+                        mapTypeId:google.maps.MapTypeId.ROADMAP,
+                        mapTypeControl:false,
+                        navigationControlOptions:{style:google.maps.NavigationControlStyle.SMALL}
+                    }
+
+                    var map = new google.maps.Map(document.getElementById("mapholder"), myOptions);
+                    var marker = new google.maps.Marker({position:latlon, map:map, title:"You are here!"});
+                }
+
+                function showError(error) {
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            x.innerHTML = "User denied the request for Geolocation."
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            x.innerHTML = "Location information is unavailable."
+                            break;
+                        case error.TIMEOUT:
+                            x.innerHTML = "The request to get user location timed out."
+                            break;
+                        case error.UNKNOWN_ERROR:
+                            x.innerHTML = "An unknown error occurred."
+                            break;
+                        }
+                    }
+                    </script>
+                    <script>
+                    (function () {
+                        var dialog = document.getElementById('myFirstDialog');
+                        document.getElementById('show').onclick = function() {
+                            dialog.showModal();
+                        };
+                        document.getElementById('hide').onclick = function() {
+                            dialog.close();
+                        };
+                        document.getElementById('reveal').onclick = function() {
+                            dialog.showModal();
+                        };
+                    })();
+                    </script>
+                
+    </center>
+    </div>
+</body>
+</html>
